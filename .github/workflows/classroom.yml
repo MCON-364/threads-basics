@@ -1,4 +1,4 @@
-name: GitHub Classroom Workflow
+          runners: run-tests
 
 on:
   push:
@@ -29,6 +29,7 @@ jobs:
         uses: education/autograding-grading-reporter@v1
         if: always()
         env:
-          RUN-TESTS_RESULTS: "${{steps.run-tests.outcome}}"
+          RUN_TESTS_RESULTS: "${{steps.run-tests.outputs.resut}}"
         with:
-          runners: "run-tests"
+          runners: "ubuntu-latest"
+
