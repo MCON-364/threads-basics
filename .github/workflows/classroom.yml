@@ -29,5 +29,5 @@ jobs:
         uses: education/autograding-grading-reporter@v1
         if: always()
         env:
-          RUN-TESTS_RESULTS: "${{steps.run-tests.outcome}}"
+          RUN_TESTS_RESULTS: "${{steps.run-tests.outcome}}"
 
