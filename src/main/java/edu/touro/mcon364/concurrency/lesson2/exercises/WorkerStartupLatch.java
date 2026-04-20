@@ -39,9 +39,18 @@ public class WorkerStartupLatch {
      */
     public void launchAndWait(int workerCount) throws InterruptedException {
         // TODO: create a CountDownLatch(workerCount)
+        CountDownLatch latch = new CountDownLatch(workerCount);
 
         for (int i = 1; i <= workerCount; i++) {
             int id = i;
+
+            Thread worker = new Thread(() -> {
+                synchronized (startedNames) {
+                    startedNames.add(Thread.currentThread().getName());
+                    latch.countDown();
+                }
+            }, "worker-" + id);
+            worker.start();
             // TODO: create a thread named "worker-" + id that:
             //       (1) adds Thread.currentThread().getName() to startedNames
             //           (use a synchronized block on startedNames)
@@ -50,7 +59,8 @@ public class WorkerStartupLatch {
         }
 
         // TODO: call latch.await() to block until all workers have counted down
-
+        latch.await();
+        allStarted = true;
         // TODO: set allStarted = true
     }
 

@@ -1,5 +1,6 @@
 package edu.touro.mcon364.concurrency.lesson2.exercises;
 
+import java.awt.desktop.AppReopenedEvent;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,7 +37,7 @@ public class PrinterRoom {
     public PrinterRoom(int printerCount) {
         this.printerCount = printerCount;
         // TODO: initialise the semaphore with printerCount permits
-        this.semaphore = null;
+        this.semaphore = new Semaphore(printerCount);
     }
 
     /**
@@ -47,17 +48,21 @@ public class PrinterRoom {
      */
     public void print(String document) throws InterruptedException {
         // TODO: semaphore.acquire()
+        semaphore.acquire();
         try {
             // TODO: increment activeCount and update maxObserved high-water mark:
             //       int current = activeCount.incrementAndGet();
             //       maxObserved.updateAndGet(prev -> Math.max(prev, current));
-
+            int current = activeCount.incrementAndGet();
+            maxObserved.updateAndGet(prev -> Math.max(prev,  current) );
             // Simulate printing time
             Thread.sleep(50);
-
+            completedJobs.incrementAndGet();
             // TODO: completedJobs.incrementAndGet();
         } finally {
+            activeCount.decrementAndGet();
             // TODO: activeCount.decrementAndGet();
+            semaphore.release();
             // TODO: semaphore.release()
         }
     }
