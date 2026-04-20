@@ -22,24 +22,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AtomicTaskCounter {
 
-    // TODO: declare a private final AtomicInteger field initialised to 0
+    // TODO: declare the field that will hold the counter value thread-safely
     private final AtomicInteger counter = new AtomicInteger(0);
 
     /**
      * Atomically increments the counter by one.
-     * TODO: use incrementAndGet()
+     * TODO: update the counter without using synchronized
      */
     public void increment() {
-        // TODO: implement without synchronized
+        // TODO: implement
         counter.incrementAndGet();
     }
 
     /**
      * Atomically decrements the counter by one.
-     * TODO: use decrementAndGet()
+     * TODO: update the counter without using synchronized
      */
     public void decrement() {
-        // TODO: implement without synchronized
+        // TODO: implement
         counter.decrementAndGet();
     }
 
@@ -51,7 +51,7 @@ public class AtomicTaskCounter {
 
     /** Resets the counter to zero. */
     public void reset() {
-        // TODO: implement using set()
+        // TODO: implement
         counter.set(0);
     }
 }
