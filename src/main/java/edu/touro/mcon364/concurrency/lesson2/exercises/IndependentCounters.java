@@ -29,38 +29,25 @@ public class IndependentCounters {
 
     // TODO: declare private final Lock readLock  = new ReentrantLock();
     // TODO: declare private final Lock writeLock = new ReentrantLock();
-    private final Lock readLock  = new ReentrantLock();
-    private final Lock writeLock = new ReentrantLock();
 
     /**
      * Record a read operation.
-     * TODO: protect with readLock (lock / try / finally-unlock), remove synchronized
+     * TODO: protect with readLock using the lock / try / finally-unlock pattern
+     *       (remove synchronized)
      */
-    public void read() {
-        // TODO: readLock.lock(); try { readCount++; } finally { readLock.unlock(); }
-        readLock.lock();
-        try {
-            readCount++;
-        } finally {
-            readLock.unlock();
-        }
+    public synchronized void read() {
+        readCount++;
     }
 
     /**
      * Record a write operation.
-     * TODO: protect with writeLock (lock / try / finally-unlock), remove synchronized
+     * TODO: protect with writeLock using the lock / try / finally-unlock pattern
+     *       (remove synchronized)
      */
-    public void write() {
-        // TODO: writeLock.lock(); try { writeCount++; } finally { writeLock.unlock(); }
-        writeLock.lock();
-        try {
-            writeCount++;
-        } finally {
-            writeLock.unlock();
-        }
+    public synchronized void write() {
+        writeCount++;
     }
 
     public int getReadCount()  { return readCount; }
     public int getWriteCount() { return writeCount; }
 }
-

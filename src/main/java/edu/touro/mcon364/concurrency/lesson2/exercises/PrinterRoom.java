@@ -25,17 +25,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PrinterRoom {
 
     private final int printerCount;
+    // TODO: declare a private final Semaphore field
     private final Semaphore semaphore;
 
     // counters visible to tests
-    private final AtomicInteger activeCount    = new AtomicInteger(0);
-    private final AtomicInteger maxObserved    = new AtomicInteger(0);
-    private final AtomicInteger completedJobs  = new AtomicInteger(0);
+    private final AtomicInteger activeCount   = new AtomicInteger(0);
+    private final AtomicInteger maxObserved   = new AtomicInteger(0);
+    private final AtomicInteger completedJobs = new AtomicInteger(0);
 
     public PrinterRoom(int printerCount) {
         this.printerCount = printerCount;
         // TODO: initialise the semaphore with printerCount permits
-        this.semaphore = new Semaphore(printerCount);
+        this.semaphore = null;
     }
 
     /**
@@ -46,20 +47,18 @@ public class PrinterRoom {
      */
     public void print(String document) throws InterruptedException {
         // TODO: semaphore.acquire()
-        semaphore.acquire();
         try {
-            // Track concurrency for tests
-            int current = activeCount.incrementAndGet();
-            // Record high-water mark
-            maxObserved.updateAndGet(prev -> Math.max(prev, current));
+            // TODO: increment activeCount and update maxObserved high-water mark:
+            //       int current = activeCount.incrementAndGet();
+            //       maxObserved.updateAndGet(prev -> Math.max(prev, current));
 
             // Simulate printing time
             Thread.sleep(50);
-            completedJobs.incrementAndGet();
+
+            // TODO: completedJobs.incrementAndGet();
         } finally {
-            activeCount.decrementAndGet();
+            // TODO: activeCount.decrementAndGet();
             // TODO: semaphore.release()
-            semaphore.release();
         }
     }
 
@@ -74,4 +73,3 @@ public class PrinterRoom {
 
     public int getPrinterCount() { return printerCount; }
 }
-
