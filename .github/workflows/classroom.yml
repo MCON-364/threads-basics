@@ -1,4 +1,4 @@
-          runners: run-tests
+name: Autograding Tests
 
 on:
   push:
@@ -7,8 +7,13 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
 jobs:
-  autograding:
+  autograde:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,15 +26,58 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run Autograder
-        id: run-tests
-        uses: education/autograding@v1
-
-      - name: Autograding Reporter
-        uses: education/autograding-grading-reporter@v1
-        if: always()
-        env:
-          RUN_TESTS_RESULTS: "${{steps.run-tests.outputs.resut}}"
+      # ── Lesson 1 Exercises (5 × 15 = 75 pts) ────────────────────────────────
+      - name: Lesson 1 Exercises
+        id: lesson1-exercises
+        uses: classroom-resources/autograding-command-grader@v1
         with:
-          runners: "ubuntu-latest"
+          test-name: "Lesson 1 Exercises"
+          setup-command: ""
+          command: "mvn -B -ntp test -Dtest=ThreadSafeTaskCounterTest,TaskWorkerTest,SharedTaskListTest,PeriodicLoggerTest,LambdaRunnableExerciseTest"
+          timeout: 30
+          max-score: 75
 
+      # ── Lesson 1 Homework (1 × 25 = 25 pts) ─────────────────────────────────
+      - name: Lesson 1 Homework
+        id: lesson1-homework
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Lesson 1 Homework"
+          setup-command: ""
+          command: "mvn -B -ntp test -Dtest=TaskRegistryTest"
+          timeout: 10
+          max-score: 25
+
+      # ── Lesson 2 Exercises (6 × 20 = 120 pts) ───────────────────────────────
+      - name: Lesson 2 Exercises
+        id: lesson2-exercises
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Lesson 2 Exercises"
+          setup-command: ""
+          command: "mvn -B -ntp test -Dtest=AtomicTaskCounterTest,WorkerStartupLatchTest,PrinterRoomTest,BatchTaskExecutorTest,ParallelSumCalculatorTest,IndependentCountersTest"
+          timeout: 30
+          max-score: 120
+
+      # ── Lesson 2 Homework (1 × 25 = 25 pts) ─────────────────────────────────
+      - name: Lesson 2 Homework
+        id: lesson2-homework
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "Lesson 2 Homework"
+          setup-command: ""
+          command: "mvn -B -ntp test -Dtest=ExecutorTaskManagerTest"
+          timeout: 30
+          max-score: 25
+
+      # ── Reporter ─────────────────────────────────────────────────────────────
+      - name: Autograding Reporter
+        if: always()
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          LESSON1-EXERCISES_RESULTS: "${{ steps.lesson1-exercises.outputs.result }}"
+          LESSON1-HOMEWORK_RESULTS: "${{ steps.lesson1-homework.outputs.result }}"
+          LESSON2-EXERCISES_RESULTS: "${{ steps.lesson2-exercises.outputs.result }}"
+          LESSON2-HOMEWORK_RESULTS: "${{ steps.lesson2-homework.outputs.result }}"
+        with:
+          runners: lesson1-exercises,lesson1-homework,lesson2-exercises,lesson2-homework
