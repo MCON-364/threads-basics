@@ -1,8 +1,6 @@
 package edu.touro.mcon364.concurrency.test2;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ══════════════════════════════════════════════════════════════
@@ -30,8 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *    - {@code qty} must be > 0; throw {@link IllegalArgumentException} otherwise.
  *    - Must be thread-safe: two threads must not both succeed when only one
  *      unit of stock remains and both try to remove one unit.
- *    - Hint: {@link ConcurrentHashMap#compute} or
- *            {@link ConcurrentHashMap#merge} can do this atomically.
+ *    - Hint: once you have chosen the right Map implementation, its
+ *      {@code compute()} method lets you read and write atomically.
  *
  * 3. {@code getStock(String item)}
  *    - Returns the current stock for {@code item}, or {@code 0} if the item
@@ -39,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * 4. {@code getTotalUnitsAdded()}
  *    - Returns the running total of every unit ever added across all items.
- *    - Must reflect concurrent additions accurately — use {@link AtomicInteger}.
+ *    - Must reflect concurrent additions accurately — use an atomic counter (no synchronized).
  *
  * 5. {@code getSnapshot()}
  *    - Returns an unmodifiable copy of the current inventory so callers
@@ -54,11 +52,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class InventoryManager {
 
-    // TODO: declare a ConcurrentHashMap<String, Integer> for per-item stock
-    private final ConcurrentHashMap<String, Integer> stock = new ConcurrentHashMap<>();
+    // TODO: initialise this field with a thread-safe Map implementation
+    //       — which Map implementation from the lesson guarantees thread-safe reads and writes?
+    private final Map<String, Integer> stock = null;
 
-    // TODO: declare an AtomicInteger for the running total of units added
-    private final AtomicInteger totalUnitsAdded = new AtomicInteger(0);
+    // TODO: declare and initialise a field called totalUnitsAdded that tracks the
+    //       running total of units ever added, thread-safely, without using synchronized
+
 
     /**
      * Adds {@code qty} units of {@code item} to inventory.
@@ -71,7 +71,8 @@ public class InventoryManager {
         // TODO: validate qty > 0
 
         // TODO: atomically add qty to the item's current stock
-        //       Hint: ConcurrentHashMap.merge(key, value, remappingFunction) is perfect here
+        //       Hint: the thread-safe Map implementation you chose has a merge() method
+        //             that can do this in one atomic step
 
         // TODO: atomically add qty to totalUnitsAdded
     }
@@ -90,8 +91,9 @@ public class InventoryManager {
         // TODO: atomically check-and-decrement.
         //       If current stock >= qty, subtract qty and return true.
         //       Otherwise, leave stock unchanged and return false.
-        //       Hint: ConcurrentHashMap.compute() lets you read and write atomically.
-        //             Use a boolean[] flag to communicate the result out of the lambda.
+        //       Hint: your chosen Map has a compute() method that lets you
+        //             read and write in one atomic step. Use a boolean[] flag
+        //             to communicate the result out of the lambda.
         return false;
     }
 
