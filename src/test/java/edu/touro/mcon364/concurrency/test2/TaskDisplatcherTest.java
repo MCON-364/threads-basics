@@ -69,13 +69,12 @@ class TaskDispatcherTest {
     }
 
     @Test
-    void getResultsReturnsDefensiveCopy() throws Exception {
+    void getResultsReturnsUnmodifiableCopy() throws Exception {
         dispatcher.dispatch(List.of("one")).get(0).get(1, java.util.concurrent.TimeUnit.SECONDS);
         Thread.sleep(50);
         List<String> copy = dispatcher.getResults();
-        copy.clear();
-        assertFalse(dispatcher.getResults().isEmpty(),
-                "getResults() must return a copy, not the internal list");
+        assertThrows(UnsupportedOperationException.class, () -> copy.add("injected"),
+                "getResults() must return an unmodifiable copy");
     }
 
     // ---- concurrency --------------------------------------------------------
