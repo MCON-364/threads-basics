@@ -44,11 +44,11 @@ public class TaskDispatcher {
 
     public static final int POOL_SIZE = 4;
 
-    // TODO 1: replace null — which factory method gives you a fixed-size pool?
-    private final ExecutorService pool = Executors.newFixedThreadPool(POOL_SIZE);
+    // TODO 1: replace null with an appropriate class
+    private final ExecutorService pool = null;
 
     // TODO 2: replace null — which Lock implementation lets you lock and unlock explicitly?
-    private final Lock lock = new ReentrantLock();
+    private final Lock lock = null;
 
     // provided — do not change
     private final List<String> results = new java.util.ArrayList<>();
@@ -64,50 +64,24 @@ public class TaskDispatcher {
      */
     public List<Future<String>> dispatch(List<String> tasks) {
         // TODO 3
-        List<Future<String>>futures = tasks.stream().map(String::toUpperCase).map(
-                upper -> {
-                 Future<String> future = pool.submit(() -> {
-                        try {
-                            lock.lock();
-                            recordResult(upper);
-                            completedCount++;
-                        }
-                        finally {
-                            lock.unlock();
-                        }
-                        return upper;
-                    });
-                 return future;
-                }
-        ).toList();
-        return futures;
+        return null; //placeholder
     }
 
     public void recordResult(String result) {
-        results.add(result);
+        //TODO 4
     }
 
     public void shutdown() throws InterruptedException {
-        boolean result = pool.awaitTermination(10, TimeUnit.SECONDS);
+        //TODO 5
     }
 
     public List<String> getResults() {
-        try {
-            lock.lock();
-            return List.copyOf(results);
-        }
-        finally {
-            lock.unlock();
-        }
+        //TODO 6
+        return null; //placeholder
     }
 
     public int getCompletedCount() {
-        try {
-            lock.lock();
-            return completedCount;
-        }
-        finally {
-            lock.unlock();
-        }
+        return 0; //placeholder
     }
+
 }
