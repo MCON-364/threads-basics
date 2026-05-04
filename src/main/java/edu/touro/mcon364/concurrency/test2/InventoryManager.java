@@ -89,11 +89,11 @@ public class InventoryManager {
         // TODO: validate qty > 0
 
         // TODO: atomically check-and-decrement.
-        //       If current stock >= qty, subtract qty and return true.
-        //       Otherwise, leave stock unchanged and return false.
+        //       If current stock >= qty, subtract qty.
+        //       Otherwise, leave stock unchanged.
+        //       Return true if stock was depleted, false if unchanged
         //       Hint: your chosen Map has a compute() method that lets you
-        //             read and write in one atomic step. Use a boolean[] flag
-        //             to communicate the result out of the lambda.
+        //             read and write in one atomic step.
         return false;
     }
 
