@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ══════════════════════════════════════════════════════════════
- *  IN-CLASS TEST — Problem 1 of 3                  (~25 minutes)
+ *  Problem 1 of 3
  * ══════════════════════════════════════════════════════════════
  *
  * SCENARIO
