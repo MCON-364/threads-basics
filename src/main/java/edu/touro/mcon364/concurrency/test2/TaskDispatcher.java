@@ -64,23 +64,17 @@ public class TaskDispatcher {
      */
     public List<Future<String>> dispatch(List<String> tasks) {
         // TODO 3
-        List<Future<String>>futures = tasks.stream().map(String::toUpperCase).map(
-                upper -> {
-                 Future<String> future = pool.submit(() -> {
-                        try {
-                            lock.lock();
-                            recordResult(upper);
-                            completedCount++;
-                        }
-                        finally {
-                            lock.unlock();
-                        }
-                        return upper;
-                    });
-                 return future;
-                }
-        ).toList();
-        return futures;
+        return tasks.stream().map(task -> pool.submit(() -> {
+            String upper = task.toUpperCase();
+            lock.lock();
+            try {
+                recordResult(upper);
+                completedCount++;
+            } finally {
+                lock.unlock();
+            }
+            return upper;
+        })).toList();
     }
 
     public void recordResult(String result) {
@@ -88,7 +82,8 @@ public class TaskDispatcher {
     }
 
     public void shutdown() throws InterruptedException {
-        boolean result = pool.awaitTermination(10, TimeUnit.SECONDS);
+        pool.shutdown();
+        pool.awaitTermination(10, TimeUnit.SECONDS);
     }
 
     public List<String> getResults() {

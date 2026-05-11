@@ -2,7 +2,6 @@ package edu.touro.mcon364.concurrency.test2;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -57,7 +56,7 @@ public class InventoryManager {
 
     // TODO: initialise this field with a thread-safe Map implementation
     //       — which Map implementation from the lesson guarantees thread-safe reads and writes?
-    private final Map<String, Integer> stock = new ConcurrentHashMap();
+    private final Map<String, Integer> stock = new ConcurrentHashMap<>();
 
     // TODO: declare and initialise a field called totalUnitsAdded that tracks the
     //       running total of units ever added, thread-safely, without using synchronized
@@ -96,26 +95,22 @@ public class InventoryManager {
         if (qty <= 0){
             throw new IllegalArgumentException("Number of units to remove should be > 0") ;
         }
-        Integer currentValue = stock.get(item);
-        Integer newValue = stock.compute(item, (key, value) -> {
-            return value >= qty? value -= qty: value;
+        boolean[] removed = {false};
+        stock.compute(item, (key, value) -> {
+            if (value != null && value >= qty) {
+                removed[0] = true;
+                return value - qty;
+            }
+            return value;
         });
-        return currentValue == newValue? false: true;
-
-        // TODO: atomically check-and-decrement.
-        //       If current stock >= qty, subtract qty.
-        //       Otherwise, leave stock unchanged.
-        //       Return true if stock was depleted, false if unchanged
-        //       Hint: your chosen Map has a compute() method that lets you
-        //             read and write in one atomic step.
-
+        return removed[0];
     }
 
     /**
      * Returns the current stock for {@code item}, or 0 if unknown.
      */
     public int getStock(String item) {
-        return stock.containsKey(item)? stock.get(item) : 0;
+        return stock.getOrDefault(item, 0);
     }
 
     /**
